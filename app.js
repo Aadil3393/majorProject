@@ -22,6 +22,7 @@ main().then(
 //Setting eJS
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"views"));
+app.use(express.urlencoded({extended:true}));
 
 //setting up a port to listen
 app.listen(8080, ()=>{
@@ -34,10 +35,21 @@ app.get("/", (req,res)=>{
     res.send("Request received");
 })
 
+//Index Route
 app.get("/listings", async (req,res)=>{
     const allListings = await Listing.find({});
     res.render("./listings/index.ejs",{allListings});
 })
+
+
+//Show Route
+app.get("/listings/:id", async (req,res) => {
+    let {id} = req.params;
+    console.log({id});
+    const listing = await Listing.findById(id);
+    res.render("./listings/show.ejs",{listing});
+});
+
 //Listing
 // app.get("/testingNew", async (req,res)=>{
 //     let sampleListing = new Listing({
