@@ -62,13 +62,20 @@ app.get("/listings/:id", async (req,res) => {
 });
 
 //Create Route
-app.post("/listings",async (req,res)=>{
+app.post("/listings",async (req,res,next)=>{
     // let listing = req.body.Listing;
-    const newListing = new Listing(req.body.Listing);
-    await newListing.save();
+    try{
+        const newListing = new Listing(req.body.Listing);
+        await newListing.save();
+    
+        // res.send("Post request received")
+        res.redirect("/listings");
 
-    // res.send("Post request received")
-    res.redirect("/listings");
+    }
+    catch (err){
+        next(err);
+    }
+
 
 })
 
@@ -111,3 +118,6 @@ app.delete("/listings/:id", async (req,res)=>{
 
 // })
 
+app.use((err,req,res,next)=>{
+    res.send("Something went wrong");
+})
