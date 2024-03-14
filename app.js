@@ -9,6 +9,7 @@ const mongoose = require("mongoose");
 const Listing = require("./models/listing")
 const path = require("path");
 const methodOverride = require("method-override");
+const wrapAsync = require("./utils/wrapAsync.js");
 
 MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
 
@@ -62,22 +63,16 @@ app.get("/listings/:id", async (req,res) => {
 });
 
 //Create Route
-app.post("/listings",async (req,res,next)=>{
+app.post("/listings", wrapAsync(async (req,res,next)=>{
     // let listing = req.body.Listing;
-    try{
         const newListing = new Listing(req.body.Listing);
         await newListing.save();
     
         // res.send("Post request received")
         res.redirect("/listings");
 
-    }
-    catch (err){
-        next(err);
-    }
 
-
-})
+}))
 
 //Edit Route
 app.get("/listings/:id/edit",async (req,res)=>{
